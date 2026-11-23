@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kho Nhạc Tết Việt</title>
+<style>
+:root{--red:#b91c1c;--red2:#7f1d1d;--gold:#facc15;--cream:#fff8e8;--ink:#3b1712}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--ink)}
+header{background:linear-gradient(120deg,#7f1d1d,#dc2626);color:white;padding:34px 18px;text-align:center}
+header h1{margin:0 0 8px;font-size:clamp(28px,5vw,42px)}header p{margin:0;color:#ffe7b0}
+main{max-width:1050px;margin:24px auto;padding:0 16px}
+.panel{background:white;border:1px solid #f1d6b4;border-radius:16px;padding:20px;box-shadow:0 8px 25px #6b210d12;margin-bottom:18px}
+h2{margin:0 0 14px;color:var(--red2);font-size:21px}
+.searchrow{display:flex;gap:10px;flex-wrap:wrap}
+input,select{font:inherit;padding:12px;border:1px solid #e7c9ad;border-radius:10px;background:#fffdf8;min-width:0}
+#search{flex:1;min-width:220px}
+button{font:inherit;border:0;border-radius:10px;padding:12px 17px;background:var(--red);color:white;cursor:pointer;font-weight:700}
+button:hover{filter:brightness(1.08)}button.secondary{background:#7c4a32}button.delete{background:#9b2626;padding:8px 10px;font-size:13px}
+.song-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:13px}
+.song{border:1px solid #f0d8c2;border-radius:13px;padding:15px;background:#fffdf9}
+.song h3{margin:0 0 6px;font-size:17px}.song p{margin:4px 0;color:#795548;font-size:14px}
+.song .actions{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.song a{color:var(--red);font-weight:700;text-decoration:none}.song a:hover{text-decoration:underline}
+.empty{text-align:center;color:#8b6b5d;padding:24px;grid-column:1/-1}
+.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.formgrid input,.formgrid select{width:100%}.formgrid .wide{grid-column:1/-1}
+.note{font-size:13px;color:#80685c;line-height:1.5}
+footer{text-align:center;padding:22px;color:#8b6b5d;font-size:13px}
+@media(max-width:560px){.formgrid{grid-template-columns:1fr}.formgrid .wide{grid-column:auto}.panel{padding:15px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎵 KHO NHẠC TẾT VIỆT 🎵</h1>
+  <p>Lưu trữ, quản lý và tìm kiếm những ca khúc mùa xuân yêu thích</p>
+</header>
+<main>
+  <section class="panel">
+    <h2>🔎 Tìm kiếm bài hát</h2>
+    <div class="searchrow">
+      <input id="search" type="search" placeholder="Nhập tên bài hát, ca sĩ hoặc thể loại...">
+      <select id="filter">
+        <option value="">Tất cả thể loại</option>
+        <option>Nhạc xuân</option><option>Nhạc thiếu nhi</option><option>Nhạc trữ tình</option><option>Nhạc trẻ</option><option>Khác</option>
+      </select>
+      <button id="clearSearch" class="secondary" type="button">Xóa tìm kiếm</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>📚 Danh sách nhạc Tết</h2>
+    <div id="count" class="note" aria-live="polite"></div>
+    <div id="songs" class="song-list"></div>
+  </section>
+
+  <section class="panel">
+    <h2>➕ Thêm bài hát vào kho</h2>
+    <form id="songForm" class="formgrid">
+      <input id="title" required maxlength="100" placeholder="Tên bài hát *">
+      <input id="artist" required maxlength="80" placeholder="Ca sĩ / Nghệ sĩ *">
+      <select id="genre">
+        <option>Nhạc xuân</option><option>Nhạc thiếu nhi</option><option>Nhạc trữ tình</option><option>Nhạc trẻ</option><option>Khác</option>
+      </select>
+      <input id="year" type="number" min="1900" max="2100" placeholder="Năm phát hành (nếu biết)">
+      <input id="url" class="wide" type="url" placeholder="Đường dẫn nghe nhạc (YouTube hoặc trang nghe nhạc)">
+      <button class="wide" type="submit">Lưu bài hát</button>
+    </form>
+    <p class="note">Dữ liệu được lưu trên trình duyệt của thiết bị này bằng bộ nhớ cục bộ (Local Storage). Hãy nhập đường dẫn hợp lệ nếu muốn mở bài hát để nghe.</p>
+  </section>
+</main>
+<footer>🌸 Chúc bạn một năm mới an khang, vui vẻ và tràn đầy âm nhạc! 🌸</footer>
+<script>
+const starterSongs = [
+ {id:1,title:"Ngày Tết quê em",artist:"Từ Huy",genre:"Nhạc thiếu nhi",year:"",url:""},
+ {id:2,title:"Ngày xuân long phụng sum vầy",artist:"Quang Huy",genre:"Nhạc xuân",year:"",url:""},
+ {id:3,title:"Điệp khúc mùa xuân",artist:"Quốc Dũng",genre:"Nhạc xuân",year:"",url:""},
+ {id:4,title:"Xuân đã về",artist:"Minh Kỳ",genre:"Nhạc xuân",year:"",url:""},
+ {id:5,title:"Câu chuyện đầu năm",artist:"Hoài An",genre:"Nhạc trữ tình",year:"",url:""}
+];
+let songs;
+try { songs = JSON.parse(localStorage.getItem("tetMusicLibrary")) || starterSongs; }
+catch(e) { songs = starterSongs; }
+const $ = id => document.getElementById(id);
+function save(){localStorage.setItem("tetMusicLibrary",JSON.stringify(songs));}
+function safeText(value){return String(value ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function render(){
+ const q=$("search").value.trim().toLocaleLowerCase("vi");
+ const genre=$("filter").value;
+ const shown=songs.filter(s=>(!genre||s.genre===genre)&&[s.title,s.artist,s.genre,s.year].join(" ").toLocaleLowerCase("vi").includes(q));
+ $("count").textContent=`Đang hiển thị ${shown.length} / ${songs.length} bài hát`;
+ $("songs").innerHTML=shown.length?shown.map(s=>`
+  <article class="song">
+   <h3>🎶 ${safeText(s.title)}</h3>
+   <p><strong>Ca sĩ:</strong> ${safeText(s.artist)}</p>
+   <p><strong>Thể loại:</strong> ${safeText(s.genre)}</p>
+   ${s.year?`<p><strong>Năm:</strong> ${safeText(s.year)}</p>`:""}
+   <div class="actions">
+    ${s.url?`<a href="${safeText(s.url)}" target="_blank" rel="noopener noreferrer">▶ Nghe nhạc</a>`:'<span class="note">Chưa có đường dẫn nghe</span>'}
+    <button class="delete" type="button" data-delete="${s.id}">Xóa</button>
+   </div>
+  </article>`).join(""):'<div class="empty">Không tìm thấy bài hát phù hợp. Bạn có thể thêm bài hát mới ở bên dưới.</div>';
+}
+$("songForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const title=$("title").value.trim(),artist=$("artist").value.trim(),url=$("url").value.trim();
+ if(!title||!artist)return;
+ if(url){try{const parsed=new URL(url);if(!["http:","https:"].includes(parsed.protocol))throw new Error();}catch{alert("Vui lòng nhập đường dẫn bắt đầu bằng http:// hoặc https://");return;}}
+ songs.unshift({id:Date.now(),title,artist,genre:$("genre").value,year:$("year").value,url});
+ save();render();e.target.reset();
+});
+$("songs").addEventListener("click",e=>{
+ const id=e.target.dataset.delete;if(!id)return;
+ if(confirm("Bạn có chắc muốn xóa bài hát này khỏi kho?")){songs=songs.filter(s=>String(s.id)!==id);save();render();}
+});
+$("search").addEventListener("input",render);
+$("filter").addEventListener("change",render);
+$("clearSearch").addEventListener("click",()=>{$("search").value="";$("filter").value="";render();});
+render();
+</script>
+</body>
+</html>
